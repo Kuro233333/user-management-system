@@ -9,9 +9,12 @@
         <div class="box">
           <el-button @click="handleSearch" type="primary" class="searchBtn">查询</el-button>
         </div>
+        <div class="box">
+          <el-button  @click="dialogFormVisible = true" type="primary" class="addhBtn">新增用户</el-button>
+        </div>
       </div>
         <div class="box" style="align-self:flex-end;">
-          <el-button  @click="dialogFormVisible = true" type="primary" class="addhBtn">新增用户</el-button>
+          <el-button  @click="handleExportExcel" type="primary" plain class="EXCELBtn">导出EXCEL</el-button>
         </div>
     </div>
 
@@ -106,6 +109,8 @@
 
 <script>
 import axios from 'axios'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 export default {
   name: 'Userlist',
   inject: ['reload'],
@@ -240,6 +245,24 @@ export default {
       this.updateUser(this.id, this.modForm.name, this.modForm.phone, this.modForm.mail)
       this.modDialog = false
       this.reload()
+    },
+    handleExportExcel () {
+      this.$message({
+        message: '正在导出EXCEL，请稍候',
+        type: 'success'
+      })
+      this.exportExcel()
+    },
+    exportExcel () {
+      // console.log(this.$refs.table)
+      /* generate workbook object from table */
+      var wb = XLSX.utils.table_to_book(this.$refs.table)
+      /* get binary string as output */
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+      } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+      return wbout
     }
 
   }
@@ -271,15 +294,17 @@ export default {
         font-family $zwFont
         font-size 16px
         margin-bottom 10px
+        margin-right 20px
         .searchBtn
           padding 12px 55px
         .typeWid
           width 140px
         .searchText
           width 140px
-          margin-right 20px
     .addhBtn
       padding 12px 41px
+    .EXCELBtn
+      padding 12px 32px
 .pagination
   margin-left 400px
   margin-top 20px
