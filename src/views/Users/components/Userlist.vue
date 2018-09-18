@@ -109,8 +109,6 @@
 
 <script>
 import axios from 'axios'
-import FileSaver from 'file-saver'
-import XLSX from 'xlsx'
 export default {
   name: 'Userlist',
   inject: ['reload'],
@@ -254,15 +252,18 @@ export default {
       this.exportExcel()
     },
     exportExcel () {
-      // console.log(this.$refs.table)
-      /* generate workbook object from table */
-      var wb = XLSX.utils.table_to_book(this.$refs.table)
-      /* get binary string as output */
-      var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-      try {
-        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
-      } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
-      return wbout
+      require.ensure([], () => {
+        // eslint-disable-next-line
+        const {export_json_to_excel} = require('@/vendor/Export2Excel')
+        const tHeader = ['姓名', '电话', '邮箱']
+        const filterVal = ['name', 'phone', 'email']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '用户列表')
+      })
+    },
+    formatJson (filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
     }
 
   }
