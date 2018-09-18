@@ -4,6 +4,12 @@
 本系统采用vue+elementUI+axios来实现  
 后端模拟数据使用JSON-Server，个人觉得这是一个很优秀的插件，极其方便。  
 有兴趣可以去它的官网看看 https://github.com/typicode/json-server  
+## 已实现功能
+>>√模拟接口数据  
+>>√使用axios读取数据并渲染到elementUI的table组件中  
+>>√使用了表格的增加，删除，查询，修改  
+>>√讲表格内容导出成EXCEL  
+
 
 ## 安装与使用
 1.git clone 此项目  
